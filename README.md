@@ -1,5 +1,7 @@
 # media-encoder-host-worker
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/chrisguttandin/media-encoder-host-worker.svg)](https://greenkeeper.io/)
+
 **The worker which is used by the media-encoder-host package.**
 
 [![tests](https://img.shields.io/travis/chrisguttandin/media-encoder-host-worker/master.svg?style=flat-square)](https://travis-ci.org/chrisguttandin/media-encoder-host-worker)
