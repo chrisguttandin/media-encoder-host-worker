@@ -1,15 +1,16 @@
+import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
 import { createWorker } from 'worker-factory';
 import { cancelEncoding } from './helpers/cancel-encoding';
 import { finishEncoding } from './helpers/finish-encoding';
 import { instantiateEncoder } from './helpers/instantiate-encoder';
-import { loadEncoder } from './helpers/load-encoder';
-import { IEncoder, IEncoderConstructor, IMediaEncoderHostWorkerCustomDefinition } from './interfaces';
+import { registerEncoder } from './helpers/register-encoder';
+import { IMediaEncoderHostWorkerCustomDefinition } from './interfaces';
 
 export * from './interfaces';
 export * from './types';
 
-const encoderConstructorRegistry: Map<string, [ RegExp, IEncoderConstructor ]> = new Map();
-const encoderInstancesRegistry: Map<number, [ IEncoder, MessagePort, boolean ]> = new Map();
+const encoderBrokerRegistry: Map<string, [ RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition ]> = new Map();
+const encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]> = new Map();
 
 createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, {
     cancel: ({ encoderId }) => {
@@ -23,11 +24,11 @@ createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, {
         return { result: arrayBuffers, transferables: arrayBuffers };
     },
     instantiate: ({ encoderId, mimeType }) => {
-        const port = instantiateEncoder(encoderConstructorRegistry, encoderId, encoderInstancesRegistry, mimeType);
+        const port = instantiateEncoder(encoderBrokerRegistry, encoderId, encoderInstancesRegistry, mimeType);
 
         return { result: port, transferables: [ port ] };
     },
-    load: ({ url }) => {
-        return { result: loadEncoder(encoderConstructorRegistry, url) };
+    register: async ({ port }) => {
+        return { result: await registerEncoder(encoderBrokerRegistry, port) };
     }
 });

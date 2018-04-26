@@ -1,15 +1,15 @@
-import { IEncoder } from '../interfaces';
+import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
 import { closePort } from './close-port';
 import { removeEncoderInstance } from './remove-encoder-instance';
 
 export const finishEncoding = (
     encoderId: number,
-    encoderInstancesRegistry: Map<number, [ IEncoder, MessagePort, boolean ]>
+    encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]>
 ): Promise<ArrayBuffer[]> => {
-    const [ encoder, port, isRecording ] = removeEncoderInstance(encoderId, encoderInstancesRegistry);
+    const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId, encoderInstancesRegistry);
 
     if (!isRecording) {
-        return Promise.resolve(encoder.encode());
+        return Promise.resolve(encoderBroker.encode(encoderId));
     }
 
     return new Promise<ArrayBuffer[]>((resolve) => {
@@ -17,9 +17,9 @@ export const finishEncoding = (
             if (data.channelData === null) {
                 closePort(port);
 
-                resolve(encoder.encode());
+                resolve(encoderBroker.encode(encoderId));
             } else {
-                encoder.record(data.channelData);
+                encoderBroker.record(encoderId, data.channelData);
             }
         };
     });

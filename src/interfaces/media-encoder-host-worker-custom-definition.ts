@@ -58,11 +58,11 @@ export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefiniti
 
     };
 
-    load: {
+    register: {
 
         params: {
 
-            url: string;
+            port: MessagePort;
 
         };
 

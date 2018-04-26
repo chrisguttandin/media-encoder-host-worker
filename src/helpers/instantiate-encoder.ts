@@ -1,10 +1,13 @@
-import { IEncoder, IEncoderConstructor } from '../interfaces';
+import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
 import { closePort } from './close-port';
 
-const instantiateCapableEncoder = (encoderConstructorRegistry: Map<string, [ RegExp, IEncoderConstructor ]>, mimeType: string) => {
-    for (const [ regex, encoderConstructor ] of Array.from(encoderConstructorRegistry.values())) {
+const pickCapableEncoderBroker = (
+    encoderBrokerRegistry: Map<string, [ RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition ]>,
+    mimeType: string
+) => {
+    for (const [ regex, encoderBroker ] of Array.from(encoderBrokerRegistry.values())) {
         if (regex.test(mimeType)) {
-            return new encoderConstructor(mimeType);
+            return encoderBroker;
         }
     }
 
@@ -12,18 +15,18 @@ const instantiateCapableEncoder = (encoderConstructorRegistry: Map<string, [ Reg
 };
 
 export const instantiateEncoder = (
-    encoderConstructorRegistry: Map<string, [ RegExp, IEncoderConstructor ]>,
+    encoderBrokerRegistry: Map<string, [ RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition ]>,
     encoderId: number,
-    encoderInstancesRegistry: Map<number, [ IEncoder, MessagePort, boolean ]>,
+    encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]>,
     mimeType: string
 ): MessagePort => {
     if (encoderInstancesRegistry.has(encoderId)) {
         throw new Error(`There is already an encoder registered with an id called "${ encoderId }".`);
     }
 
-    const encoder = instantiateCapableEncoder(encoderConstructorRegistry, mimeType);
+    const encoderBroker = pickCapableEncoderBroker(encoderBrokerRegistry, mimeType);
     const { port1, port2 } = new MessageChannel();
-    const entry: [ IEncoder, MessagePort, boolean ] = [ encoder, port1, true ];
+    const entry: [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ] = [ encoderBroker, port1, true ];
 
     encoderInstancesRegistry.set(encoderId, entry);
 
@@ -33,7 +36,7 @@ export const instantiateEncoder = (
 
             entry[2] = false;
         } else {
-            encoder.record(data.channelData);
+            encoderBroker.record(encoderId, data.channelData);
         }
     };
 

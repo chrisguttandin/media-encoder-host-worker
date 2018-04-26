@@ -1,9 +1,9 @@
-import { IEncoder } from '../interfaces';
+import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
 
 export const removeEncoderInstance = (
     encoderId: number,
-    encoderInstancesRegistry: Map<number, [ IEncoder, MessagePort, boolean ]>
-): [ IEncoder, MessagePort, boolean ] => {
+    encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]>
+): [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ] => {
     const entry = encoderInstancesRegistry.get(encoderId);
 
     if (entry === undefined) {

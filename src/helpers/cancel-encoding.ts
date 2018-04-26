@@ -1,11 +1,14 @@
-import { IEncoder } from '../interfaces';
+import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
 import { closePort } from './close-port';
 import { removeEncoderInstance } from './remove-encoder-instance';
 
-export const cancelEncoding = (encoderId: number, encoderInstancesRegistry: Map<number, [ IEncoder, MessagePort, boolean ]>): void => {
-    const [ encoder, port, isRecording ] = removeEncoderInstance(encoderId, encoderInstancesRegistry);
+export const cancelEncoding = (
+    encoderId: number,
+    encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]>
+): void => {
+    const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId, encoderInstancesRegistry);
 
-    encoder.cancel();
+    encoderBroker.cancel();
 
     if (isRecording) {
         closePort(port);
