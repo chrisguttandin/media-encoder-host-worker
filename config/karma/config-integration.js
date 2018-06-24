@@ -12,7 +12,8 @@ module.exports = (config) => {
                 pattern: 'src/**',
                 served: true,
                 watched: true
-            }, {
+            },
+            {
                 included: false,
                 pattern: 'test/fixtures/**',
                 served: true
