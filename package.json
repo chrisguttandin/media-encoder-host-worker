@@ -11,7 +11,7 @@
   "dependencies": {
     "extendable-media-recorder-wav-encoder-broker": "^3.0.30",
     "tslib": "^1.9.3",
-    "worker-factory": "^2.5.3"
+    "worker-factory": "^2.5.5"
   },
   "description": "The worker which is used by the media-encoder-host package.",
   "devDependencies": {
