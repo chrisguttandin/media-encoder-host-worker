@@ -1,5 +1,5 @@
 import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
-import { createWorker } from 'worker-factory';
+import { TWorkerImplementation, createWorker } from 'worker-factory';
 import { cancelEncoding } from './helpers/cancel-encoding';
 import { finishEncoding } from './helpers/finish-encoding';
 import { instantiateEncoder } from './helpers/instantiate-encoder';
@@ -12,7 +12,7 @@ export * from './types';
 const encoderBrokerRegistry: Map<string, [ RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition ]> = new Map();
 const encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]> = new Map();
 
-createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, {
+createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementation<IMediaEncoderHostWorkerCustomDefinition>> {
     cancel: ({ encoderId }) => {
         cancelEncoding(encoderId, encoderInstancesRegistry);
 
