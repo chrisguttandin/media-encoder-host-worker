@@ -31,12 +31,12 @@ export const instantiateEncoder = (
     encoderInstancesRegistry.set(encoderId, entry);
 
     port1.onmessage = ({ data }) => {
-        if (data.channelData === null) {
+        if (data.length === 0) {
             closePort(port1);
 
             entry[2] = false;
         } else {
-            encoderBroker.record(encoderId, data.channelData);
+            encoderBroker.record(encoderId, data);
         }
     };
 
