@@ -30,8 +30,6 @@ module.exports = (config) => {
             }
         },
 
-        concurrency: 2,
-
         files: [
             {
                 included: false,
@@ -125,7 +123,9 @@ module.exports = (config) => {
                 'FirefoxDeveloperHeadless',
                 'FirefoxHeadless',
                 'Safari'
-            ]
+            ],
+
+            concurrency: 2
 
         });
 

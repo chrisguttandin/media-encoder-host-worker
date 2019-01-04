@@ -6,8 +6,6 @@ module.exports = (config) => {
 
         basePath: '../../',
 
-        concurrency: 1,
-
         files: [
             {
                 included: false,
@@ -102,7 +100,9 @@ module.exports = (config) => {
                 'FirefoxDeveloperHeadless',
                 'FirefoxHeadless',
                 'Safari'
-            ]
+            ],
+
+            concurrency: 1
 
         });
 
