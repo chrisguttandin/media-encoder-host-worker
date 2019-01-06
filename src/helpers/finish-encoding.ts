@@ -14,12 +14,12 @@ export const finishEncoding = (
 
     return new Promise<ArrayBuffer[]>((resolve) => {
         port.onmessage = ({ data }) => {
-            if (data.channelData === null) {
+            if (data.length === 0) {
                 closePort(port);
 
                 resolve(encoderBroker.encode(encoderId));
             } else {
-                encoderBroker.record(encoderId, data.channelData);
+                encoderBroker.record(encoderId, data);
             }
         };
     });
