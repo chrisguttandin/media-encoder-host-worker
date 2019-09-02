@@ -1,9 +1,9 @@
 import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
 import { TWorkerImplementation, createWorker } from 'worker-factory';
-import { cancelEncoding } from './helpers/cancel-encoding';
-import { finishEncoding } from './helpers/finish-encoding';
-import { instantiateEncoder } from './helpers/instantiate-encoder';
-import { registerEncoder } from './helpers/register-encoder';
+import { cancelEncoding } from './functions/cancel-encoding';
+import { finishEncoding } from './functions/finish-encoding';
+import { instantiateEncoder } from './functions/instantiate-encoder';
+import { registerEncoder } from './functions/register-encoder';
 import { IMediaEncoderHostWorkerCustomDefinition } from './interfaces';
 
 export * from './interfaces';
