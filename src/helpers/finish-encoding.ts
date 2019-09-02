@@ -9,7 +9,7 @@ export const finishEncoding = (
     const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId, encoderInstancesRegistry);
 
     if (!isRecording) {
-        return Promise.resolve(encoderBroker.encode(encoderId));
+        return Promise.resolve(encoderBroker.encode(encoderId, null));
     }
 
     return new Promise<ArrayBuffer[]>((resolve) => {
@@ -17,7 +17,7 @@ export const finishEncoding = (
             if (data.length === 0) {
                 closePort(port);
 
-                resolve(encoderBroker.encode(encoderId));
+                resolve(encoderBroker.encode(encoderId, null));
             } else {
                 encoderBroker.record(encoderId, data);
             }
