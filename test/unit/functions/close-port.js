@@ -1,4 +1,4 @@
-import { closePort } from '../../../src/helpers/close-port';
+import { closePort } from '../../../src/functions/close-port';
 import { spy } from 'sinon';
 
 describe('closePort()', () => {

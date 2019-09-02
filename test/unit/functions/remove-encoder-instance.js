@@ -1,4 +1,4 @@
-import { removeEncoderInstance } from '../../../src/helpers/remove-encoder-instance';
+import { removeEncoderInstance } from '../../../src/functions/remove-encoder-instance';
 
 describe('removeEncoderInstance()', () => {
 
