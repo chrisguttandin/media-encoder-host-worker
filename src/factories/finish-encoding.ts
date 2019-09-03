@@ -1,8 +1,8 @@
 import { TFinishEncodingFactory } from '../types';
 
 export const createFinishEncoding: TFinishEncodingFactory = (closePort, removeEncoderInstance) => {
-    return (encoderId, encoderInstancesRegistry) => {
-        const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId, encoderInstancesRegistry);
+    return (encoderId) => {
+        const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId);
 
         if (!isRecording) {
             return Promise.resolve(encoderBroker.encode(encoderId, null));

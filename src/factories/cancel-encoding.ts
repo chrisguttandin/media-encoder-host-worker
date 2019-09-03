@@ -1,8 +1,8 @@
 import { TCancelEncodingFactory } from '../types';
 
 export const createCancelEncoding: TCancelEncodingFactory = (closePort, removeEncoderInstance) => {
-    return (encoderId, encoderInstancesRegistry) => {
-        const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId, encoderInstancesRegistry);
+    return (encoderId) => {
+        const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId);
 
         encoderBroker.cancel();
 
