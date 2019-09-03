@@ -2,9 +2,11 @@ import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-m
 import { TWorkerImplementation, createWorker } from 'worker-factory';
 import { createCancelEncoding } from './factories/cancel-encoding';
 import { createFinishEncoding } from './factories/finish-encoding';
+import { createGetEncoderInstance } from './factories/get-encoder-instance';
 import { createInstantiateEncoder } from './factories/instantiate-encoder';
 import { createPickCapableEncoderBroker } from './factories/pick-capable-encoder-broker';
 import { createRemoveEncoderInstance } from './factories/remove-encoder-instance';
+import { createRequestPartialEncoding } from './factories/request-partial-encoding';
 import { closePort } from './functions/close-port';
 import { registerEncoder } from './functions/register-encoder';
 import { IMediaEncoderHostWorkerCustomDefinition } from './interfaces';
@@ -13,12 +15,14 @@ export * from './interfaces';
 export * from './types';
 
 const encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]> = new Map();
-const removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry);
+const getEncoderInstance = createGetEncoderInstance(encoderInstancesRegistry);
+const removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry, getEncoderInstance);
 const cancelEncoding = createCancelEncoding(closePort, removeEncoderInstance);
 const encoderBrokerRegistry: Map<string, [ RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition ]> = new Map();
 const finishEncoding = createFinishEncoding(closePort, removeEncoderInstance);
 const pickCapableEncoderBroker = createPickCapableEncoderBroker(encoderBrokerRegistry);
 const instantiateEncoder = createInstantiateEncoder(closePort, encoderInstancesRegistry, pickCapableEncoderBroker);
+const requestPartialEncoding = createRequestPartialEncoding(getEncoderInstance);
 
 createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementation<IMediaEncoderHostWorkerCustomDefinition>> {
     cancel: ({ encoderId }) => {
@@ -26,8 +30,8 @@ createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementati
 
         return { result: null };
     },
-    encode: async ({ encoderId }) => {
-        const arrayBuffers = await finishEncoding(encoderId);
+    encode: async ({ encoderId, timeslice }) => {
+        const arrayBuffers = (timeslice === null) ? await finishEncoding(encoderId) : await requestPartialEncoding(encoderId, timeslice);
 
         return { result: arrayBuffers, transferables: arrayBuffers };
     },
