@@ -5,7 +5,7 @@ export const createFinishEncoding: TFinishEncodingFactory = (closePort, removeEn
         const [ encoderBroker, port, isRecording ] = removeEncoderInstance(encoderId);
 
         if (!isRecording) {
-            return Promise.resolve(encoderBroker.encode(encoderId, null));
+            return encoderBroker.encode(encoderId, null);
         }
 
         return new Promise<ArrayBuffer[]>((resolve) => {
