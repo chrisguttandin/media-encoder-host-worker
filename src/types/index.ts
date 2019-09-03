@@ -1,3 +1,5 @@
+export * from './cancel-encoding-factory';
+export * from './cancel-encoding-function';
 export * from './close-port-function';
 export * from './finish-encoding-factory';
 export * from './finish-encoding-function';
