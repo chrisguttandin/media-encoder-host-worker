@@ -24,6 +24,8 @@ export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefiniti
 
             encoderId: number;
 
+            timeslice: null | number;
+
         };
 
         response: {

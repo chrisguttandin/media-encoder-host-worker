@@ -1,12 +1,8 @@
 import { TRemoveEncoderInstanceFactory } from '../types';
 
-export const createRemoveEncoderInstance: TRemoveEncoderInstanceFactory = (encoderInstancesRegistry) => {
+export const createRemoveEncoderInstance: TRemoveEncoderInstanceFactory = (encoderInstancesRegistry, getEncoderInstance) => {
     return (encoderId) => {
-        const entry = encoderInstancesRegistry.get(encoderId);
-
-        if (entry === undefined) {
-            throw new Error('There was no instance of an encoder stored with the given id.');
-        }
+        const entry = getEncoderInstance(encoderId);
 
         encoderInstancesRegistry.delete(encoderId);
 

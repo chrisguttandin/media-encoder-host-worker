@@ -1,29 +1,36 @@
 import { createRemoveEncoderInstance } from '../../../src/factories/remove-encoder-instance';
+import { stub } from 'sinon';
 
 describe('removeEncoderInstance()', () => {
 
     let encoderId;
     let encoderInstancesRegistry;
+    let getEncoderInstance;
     let removeEncoderInstance;
 
     beforeEach(() => {
         encoderId = 'a fake encoder id';
         encoderInstancesRegistry = new Map();
+        getEncoderInstance = stub();
 
-        removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry);
+        removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry, getEncoderInstance);
     });
 
-    describe('without an entry with the given id', () => {
+    describe('with an error thrown by getEncoderInstance()', () => {
 
-        it('should throw an error', () => {
+        beforeEach(() => {
+            getEncoderInstance.throws(new Error('a fake error'));
+        });
+
+        it('should rethrow the error', () => {
             expect(() => {
                 removeEncoderInstance(encoderId);
-            }).to.throw(Error, 'There was no instance of an encoder stored with the given id.');
+            }).to.throw(Error, 'a fake error');
         });
 
     });
 
-    describe('with an entry with the given id', () => {
+    describe('with an entry return by getEncoderInstance()', () => {
 
         let entry;
 
@@ -31,6 +38,7 @@ describe('removeEncoderInstance()', () => {
             entry = [ 'a', 'fake', 'entry' ];
 
             encoderInstancesRegistry.set(encoderId, entry);
+            getEncoderInstance.returns(entry);
         });
 
         it('should return the entry', () => {
