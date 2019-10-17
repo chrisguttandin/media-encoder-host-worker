@@ -1,6 +1,7 @@
 export * from './cancel-encoding-factory';
 export * from './cancel-encoding-function';
 export * from './close-port-function';
+export * from './encoder-instances-registry-entry';
 export * from './finish-encoding-factory';
 export * from './finish-encoding-function';
 export * from './get-encoder-instance-factory';

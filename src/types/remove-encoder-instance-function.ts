@@ -1,5 +1,3 @@
-import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
+import { TEncoderInstancesRegistryEntry } from './encoder-instances-registry-entry';
 
-export type TRemoveEncoderInstanceFunction = (
-    encoderId: number
-) => [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ];
+export type TRemoveEncoderInstanceFunction = (encoderId: number) => TEncoderInstancesRegistryEntry;

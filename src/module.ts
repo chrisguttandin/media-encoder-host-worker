@@ -10,11 +10,12 @@ import { createRequestPartialEncoding } from './factories/request-partial-encodi
 import { closePort } from './functions/close-port';
 import { registerEncoder } from './functions/register-encoder';
 import { IMediaEncoderHostWorkerCustomDefinition } from './interfaces';
+import { TEncoderInstancesRegistryEntry } from './types';
 
 export * from './interfaces';
 export * from './types';
 
-const encoderInstancesRegistry: Map<number, [ IExtendableMediaRecorderWavEncoderBrokerDefinition, MessagePort, boolean ]> = new Map();
+const encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry> = new Map();
 const getEncoderInstance = createGetEncoderInstance(encoderInstancesRegistry);
 const removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry, getEncoderInstance);
 const cancelEncoding = createCancelEncoding(closePort, removeEncoderInstance);
@@ -35,8 +36,8 @@ createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementati
 
         return { result: arrayBuffers, transferables: arrayBuffers };
     },
-    instantiate: ({ encoderId, mimeType }) => {
-        const port = instantiateEncoder(encoderId, mimeType);
+    instantiate: ({ encoderId, mimeType, sampleRate }) => {
+        const port = instantiateEncoder(encoderId, mimeType, sampleRate);
 
         return { result: port, transferables: [ port ] };
     },

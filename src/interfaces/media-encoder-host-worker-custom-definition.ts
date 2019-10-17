@@ -48,6 +48,8 @@ export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefiniti
 
             mimeType: string;
 
+            sampleRate: number;
+
         };
 
         response: {
