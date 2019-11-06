@@ -2,22 +2,6 @@ import { IWorkerDefinition } from 'worker-factory';
 
 export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefinition {
 
-    cancel: {
-
-        params: {
-
-            encoderId: number;
-
-        };
-
-        response: {
-
-            result: null;
-
-        };
-
-    };
-
     encode: {
 
         params: {

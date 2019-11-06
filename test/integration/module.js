@@ -11,12 +11,6 @@ describe('module', () => {
         worker = new Worker('base/src/module.js');
     });
 
-    describe('cancel()', () => {
-
-        // @todo
-
-    });
-
     describe('encode()', () => {
 
         // @todo
