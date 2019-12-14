@@ -11,8 +11,12 @@ import { registerEncoder } from './functions/register-encoder';
 import { IMediaEncoderHostWorkerCustomDefinition } from './interfaces';
 import { TEncoderInstancesRegistryEntry } from './types';
 
-export * from './interfaces';
-export * from './types';
+/*
+ * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
+ * isolatedModules compiler option.
+ */
+export * from './interfaces/index';
+export * from './types/index';
 
 const encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry> = new Map();
 const getEncoderInstance = createGetEncoderInstance(encoderInstancesRegistry);
