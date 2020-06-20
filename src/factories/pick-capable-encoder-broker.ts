@@ -2,7 +2,7 @@ import { TPickCapableEncoderBrokerFactory } from '../types';
 
 export const createPickCapableEncoderBroker: TPickCapableEncoderBrokerFactory = (encoderBrokerRegistry) => {
     return (mimeType: string) => {
-        for (const [ regex, encoderBroker ] of Array.from(encoderBrokerRegistry.values())) {
+        for (const [regex, encoderBroker] of Array.from(encoderBrokerRegistry.values())) {
             if (regex.test(mimeType)) {
                 return encoderBroker;
             }

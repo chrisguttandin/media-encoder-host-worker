@@ -2,7 +2,6 @@ import { createRemoveEncoderInstance } from '../../../src/factories/remove-encod
 import { stub } from 'sinon';
 
 describe('removeEncoderInstance()', () => {
-
     let encoderId;
     let encoderInstancesRegistry;
     let getEncoderInstance;
@@ -17,7 +16,6 @@ describe('removeEncoderInstance()', () => {
     });
 
     describe('with an error thrown by getEncoderInstance()', () => {
-
         beforeEach(() => {
             getEncoderInstance.throws(new Error('a fake error'));
         });
@@ -27,15 +25,13 @@ describe('removeEncoderInstance()', () => {
                 removeEncoderInstance(encoderId);
             }).to.throw(Error, 'a fake error');
         });
-
     });
 
     describe('with an entry return by getEncoderInstance()', () => {
-
         let entry;
 
         beforeEach(() => {
-            entry = [ 'a', 'fake', 'entry' ];
+            entry = ['a', 'fake', 'entry'];
 
             encoderInstancesRegistry.set(encoderId, entry);
             getEncoderInstance.returns(entry);
@@ -50,7 +46,5 @@ describe('removeEncoderInstance()', () => {
 
             expect(encoderInstancesRegistry.has(encoderId)).to.be.false;
         });
-
     });
-
 });

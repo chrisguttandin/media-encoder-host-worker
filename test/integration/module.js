@@ -1,5 +1,4 @@
 describe('module', () => {
-
     let worker;
 
     after((done) => {
@@ -12,19 +11,14 @@ describe('module', () => {
     });
 
     describe('encode()', () => {
-
         // @todo
-
     });
 
     describe('instantiate()', () => {
-
         // @todo
-
     });
 
     describe('register()', () => {
-
         let id;
         let port;
 
@@ -40,7 +34,6 @@ describe('module', () => {
         });
 
         describe('with a not yet registered regex', () => {
-
             it('should return a regex', (done) => {
                 worker.addEventListener('message', ({ data }) => {
                     expect(data).to.deep.equal({ id, result: /^mime\/type$/ });
@@ -48,13 +41,11 @@ describe('module', () => {
                     done();
                 });
 
-                worker.postMessage({ id, method: 'register', params: { port } }, [ port ]);
+                worker.postMessage({ id, method: 'register', params: { port } }, [port]);
             });
-
         });
 
         describe('with a previously registered regex', () => {
-
             beforeEach((done) => {
                 const { port1, port2 } = new MessageChannel();
 
@@ -69,7 +60,7 @@ describe('module', () => {
                 };
 
                 worker.addEventListener('message', onMessage);
-                worker.postMessage({ id, method: 'register', params: { port: port1 } }, [ port1 ]);
+                worker.postMessage({ id, method: 'register', params: { port: port1 } }, [port1]);
             });
 
             it('should return an error', (done) => {
@@ -86,11 +77,8 @@ describe('module', () => {
                     done();
                 });
 
-                worker.postMessage({ id, method: 'register', params: { port } }, [ port ]);
+                worker.postMessage({ id, method: 'register', params: { port } }, [port]);
             });
-
         });
-
     });
-
 });

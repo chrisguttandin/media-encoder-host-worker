@@ -2,7 +2,7 @@ import { TFinishEncodingFactory } from '../types';
 
 export const createFinishEncoding: TFinishEncodingFactory = (closePort, removeEncoderInstance) => {
     return (encoderId) => {
-        const [ encoderBroker, port, isRecording, sampleRate ] = removeEncoderInstance(encoderId);
+        const [encoderBroker, port, isRecording, sampleRate] = removeEncoderInstance(encoderId);
 
         if (!isRecording) {
             return encoderBroker.encode(encoderId, null);

@@ -1,9 +1,7 @@
 const { env } = require('process');
 
 module.exports = (config) => {
-
     config.set({
-
         basePath: '../../',
 
         files: [
@@ -21,13 +19,10 @@ module.exports = (config) => {
             'test/integration/**/*.js'
         ],
 
-        frameworks: [
-            'mocha',
-            'sinon-chai'
-        ],
+        frameworks: ['mocha', 'sinon-chai'],
 
         mime: {
-            'text/x-typescript': [ 'ts', 'tsx' ]
+            'text/x-typescript': ['ts', 'tsx']
         },
 
         preprocessors: {
@@ -38,33 +33,28 @@ module.exports = (config) => {
         webpack: {
             mode: 'development',
             module: {
-                rules: [ {
-                    test: /\.ts?$/,
-                    use: {
-                        loader: 'ts-loader'
+                rules: [
+                    {
+                        test: /\.ts?$/,
+                        use: {
+                            loader: 'ts-loader'
+                        }
                     }
-                } ]
+                ]
             },
             resolve: {
-                extensions: [ '.js', '.ts' ]
+                extensions: ['.js', '.ts']
             }
         },
 
         webpackMiddleware: {
             noInfo: true
         }
-
     });
 
     if (env.TRAVIS) {
-
         config.set({
-
-            browsers: [
-                'ChromeSauceLabs',
-                'FirefoxSauceLabs',
-                'SafariSauceLabs'
-            ],
+            browsers: ['ChromeSauceLabs', 'FirefoxSauceLabs', 'SafariSauceLabs'],
 
             captureTimeout: 120000,
 
@@ -87,25 +77,12 @@ module.exports = (config) => {
             },
 
             tunnelIdentifier: env.TRAVIS_JOB_NUMBER
-
         });
-
     } else {
-
         config.set({
-
-            browsers: [
-                'ChromeCanaryHeadless',
-                'ChromeHeadless',
-                'FirefoxDeveloperHeadless',
-                'FirefoxHeadless',
-                'Safari'
-            ],
+            browsers: ['ChromeCanaryHeadless', 'ChromeHeadless', 'FirefoxDeveloperHeadless', 'FirefoxHeadless', 'Safari'],
 
             concurrency: 1
-
         });
-
     }
-
 };

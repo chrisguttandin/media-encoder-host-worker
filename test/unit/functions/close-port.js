@@ -2,11 +2,10 @@ import { closePort } from '../../../src/functions/close-port';
 import { spy } from 'sinon';
 
 describe('closePort()', () => {
-
     let port;
 
     beforeEach(() => {
-        port = { close: spy(), onmessage: () => { } };
+        port = { close: spy(), onmessage: () => {} };
     });
 
     it('should set the onmessage handler of the given port to null', () => {
@@ -20,5 +19,4 @@ describe('closePort()', () => {
 
         expect(port.close).to.have.been.calledOnce;
     });
-
 });

@@ -21,22 +21,22 @@ export * from './types/index';
 const encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry> = new Map();
 const getEncoderInstance = createGetEncoderInstance(encoderInstancesRegistry);
 const removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry, getEncoderInstance);
-const encoderBrokerRegistry: Map<string, [ RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition ]> = new Map();
+const encoderBrokerRegistry: Map<string, [RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition]> = new Map();
 const finishEncoding = createFinishEncoding(closePort, removeEncoderInstance);
 const pickCapableEncoderBroker = createPickCapableEncoderBroker(encoderBrokerRegistry);
 const instantiateEncoder = createInstantiateEncoder(closePort, encoderInstancesRegistry, pickCapableEncoderBroker);
 const requestPartialEncoding = createRequestPartialEncoding(getEncoderInstance);
 
-createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementation<IMediaEncoderHostWorkerCustomDefinition>> {
+createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementation<IMediaEncoderHostWorkerCustomDefinition>>{
     encode: async ({ encoderId, timeslice }) => {
-        const arrayBuffers = (timeslice === null) ? await finishEncoding(encoderId) : await requestPartialEncoding(encoderId, timeslice);
+        const arrayBuffers = timeslice === null ? await finishEncoding(encoderId) : await requestPartialEncoding(encoderId, timeslice);
 
         return { result: arrayBuffers, transferables: arrayBuffers };
     },
     instantiate: ({ encoderId, mimeType, sampleRate }) => {
         const port = instantiateEncoder(encoderId, mimeType, sampleRate);
 
-        return { result: port, transferables: [ port ] };
+        return { result: port, transferables: [port] };
     },
     register: async ({ port }) => {
         return { result: await registerEncoder(encoderBrokerRegistry, port) };

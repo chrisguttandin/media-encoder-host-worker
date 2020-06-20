@@ -2,5 +2,5 @@ import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-m
 import { TPickCapableEncoderBrokerFunction } from './pick-capable-encoder-broker-function';
 
 export type TPickCapableEncoderBrokerFactory = (
-    encoderBrokerRegistry: Map<string, [ RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition ]>
+    encoderBrokerRegistry: Map<string, [RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition]>
 ) => TPickCapableEncoderBrokerFunction;
