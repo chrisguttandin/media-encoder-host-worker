@@ -1,3 +1,4 @@
+import { TTypedArray } from 'worker-factory';
 import { TEncoderInstancesRegistryEntry, TInstantiateEncoderFactory } from '../types';
 
 export const createInstantiateEncoder: TInstantiateEncoderFactory = (closePort, encoderInstancesRegistry, pickCapableEncoderBroker) => {
@@ -18,7 +19,15 @@ export const createInstantiateEncoder: TInstantiateEncoderFactory = (closePort, 
 
                 entry[2] = false;
             } else {
-                encoderBroker.record(encoderId, sampleRate, data);
+                encoderBroker.record(
+                    encoderId,
+                    sampleRate,
+                    data.map((channelDataOrNumberOfSamples: number | TTypedArray) =>
+                        typeof channelDataOrNumberOfSamples === 'number'
+                            ? new Float32Array(channelDataOrNumberOfSamples)
+                            : channelDataOrNumberOfSamples
+                    )
+                );
             }
         };
 
