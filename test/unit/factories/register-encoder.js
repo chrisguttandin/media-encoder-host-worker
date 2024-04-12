@@ -4,15 +4,17 @@ import { stub } from 'sinon';
 describe('registerEncoder()', () => {
     let encoderBrokerRegistry;
     let port;
+    let ports;
     let registerEncoder;
     let wrap;
 
     beforeEach(() => {
         encoderBrokerRegistry = new Map();
         port = 'a fake port';
+        ports = new Map();
         wrap = stub();
 
-        registerEncoder = createRegisterEncoder(encoderBrokerRegistry, wrap);
+        registerEncoder = createRegisterEncoder(encoderBrokerRegistry, ports, wrap);
     });
 
     describe('with an error thrown by wrap()', () => {
@@ -43,6 +45,14 @@ describe('registerEncoder()', () => {
         it('should not add anything to the encoderBrokerRegistry', (done) => {
             registerEncoder(port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
+
+                done();
+            });
+        });
+
+        it('should not add anything to the ports', (done) => {
+            registerEncoder(port).catch(() => {
+                expect(ports.size).to.equal(0);
 
                 done();
             });
@@ -88,6 +98,14 @@ describe('registerEncoder()', () => {
         it('should not add anything to the encoderBrokerRegistry', (done) => {
             registerEncoder(port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
+
+                done();
+            });
+        });
+
+        it('should not add anything to the ports', (done) => {
+            registerEncoder(port).catch(() => {
+                expect(ports.size).to.equal(0);
 
                 done();
             });
@@ -141,6 +159,71 @@ describe('registerEncoder()', () => {
                 done();
             });
         });
+
+        it('should not add anything to the ports', (done) => {
+            registerEncoder(port).catch(() => {
+                expect(ports.size).to.equal(0);
+
+                done();
+            });
+        });
+    });
+
+    describe('with an existing port', () => {
+        let encoderBroker;
+        let regex;
+
+        beforeEach(() => {
+            encoderBroker = { characterize: stub() };
+            regex = 'a fake regex';
+
+            ports.set(port, 'a fake entry');
+
+            wrap.returns(encoderBroker);
+            encoderBroker.characterize.resolves(regex);
+        });
+
+        it('should call wrap() with the given port', (done) => {
+            registerEncoder(port).catch(() => {
+                expect(wrap).to.have.been.calledOnceWithExactly(port);
+
+                done();
+            });
+        });
+
+        it('should call characterize() on the encoderBroker returned by wrap()', (done) => {
+            registerEncoder(port).catch(() => {
+                expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
+
+                done();
+            });
+        });
+
+        it('should throw an error', (done) => {
+            registerEncoder(port).catch((err) => {
+                expect(err.name).to.equal('Error');
+                expect(err.message).to.equal('There is already an encoder stored which handles exactly the same mime types.');
+
+                done();
+            });
+        });
+
+        it('should not add anything to the encoderBrokerRegistry', (done) => {
+            registerEncoder(port).catch(() => {
+                expect(encoderBrokerRegistry.size).to.equal(0);
+
+                done();
+            });
+        });
+
+        it('should not add anything to the ports', (done) => {
+            registerEncoder(port).catch(() => {
+                expect(ports.size).to.equal(1);
+                expect(ports.get(port)).to.equal('a fake entry');
+
+                done();
+            });
+        });
     });
 
     describe('without an existing entry', () => {
@@ -176,6 +259,13 @@ describe('registerEncoder()', () => {
 
             expect(encoderBrokerRegistry.size).to.equal(1);
             expect(encoderBrokerRegistry.get(regex)).to.deep.equal([regex, encoderBroker]);
+        });
+
+        it('should add the port to the ports', async () => {
+            await registerEncoder(port);
+
+            expect(ports.size).to.equal(1);
+            expect(ports.get(port)).to.equal(regex);
         });
     });
 });

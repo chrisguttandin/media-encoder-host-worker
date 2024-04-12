@@ -1,6 +1,16 @@
 import { IWorkerDefinition } from 'worker-factory';
 
 export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefinition {
+    deregister: {
+        params: {
+            port: MessagePort;
+        };
+
+        response: {
+            result: undefined;
+        };
+    };
+
     encode: {
         params: {
             encoderId: number;
