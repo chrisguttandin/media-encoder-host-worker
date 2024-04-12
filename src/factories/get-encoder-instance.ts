@@ -1,7 +1,7 @@
-import { TGetEncoderInstanceFactory } from '../types';
+import type { TEncoderInstancesRegistryEntry } from '../types';
 
-export const createGetEncoderInstance: TGetEncoderInstanceFactory = (encoderInstancesRegistry) => {
-    return (encoderId) => {
+export const createGetEncoderInstance = (encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry>) => {
+    return (encoderId: number) => {
         const entry = encoderInstancesRegistry.get(encoderId);
 
         if (entry === undefined) {

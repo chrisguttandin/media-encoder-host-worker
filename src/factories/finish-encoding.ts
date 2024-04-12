@@ -1,7 +1,11 @@
-import { TFinishEncodingFactory } from '../types';
+import type { closePort as closePortFunction } from '../functions/close-port';
+import type { createRemoveEncoderInstance } from './remove-encoder-instance';
 
-export const createFinishEncoding: TFinishEncodingFactory = (closePort, removeEncoderInstance) => {
-    return (encoderId) => {
+export const createFinishEncoding = (
+    closePort: typeof closePortFunction,
+    removeEncoderInstance: ReturnType<typeof createRemoveEncoderInstance>
+) => {
+    return (encoderId: number) => {
         const [encoderBroker, port, isRecording, sampleRate] = removeEncoderInstance(encoderId);
 
         if (!isRecording) {

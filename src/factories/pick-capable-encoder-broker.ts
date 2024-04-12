@@ -1,6 +1,8 @@
-import { TPickCapableEncoderBrokerFactory } from '../types';
+import type { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
 
-export const createPickCapableEncoderBroker: TPickCapableEncoderBrokerFactory = (encoderBrokerRegistry) => {
+export const createPickCapableEncoderBroker = (
+    encoderBrokerRegistry: Map<string, [RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition]>
+) => {
     return (mimeType: string) => {
         for (const [regex, encoderBroker] of Array.from(encoderBrokerRegistry.values())) {
             if (regex.test(mimeType)) {

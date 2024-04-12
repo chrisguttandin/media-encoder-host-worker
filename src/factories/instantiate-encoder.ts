@@ -1,8 +1,14 @@
-import { TTypedArray } from 'worker-factory';
-import { TEncoderInstancesRegistryEntry, TInstantiateEncoderFactory } from '../types';
+import type { TTypedArray } from 'worker-factory';
+import type { closePort as closePortFunction } from '../functions/close-port';
+import type { TEncoderInstancesRegistryEntry } from '../types';
+import type { createPickCapableEncoderBroker } from './pick-capable-encoder-broker';
 
-export const createInstantiateEncoder: TInstantiateEncoderFactory = (closePort, encoderInstancesRegistry, pickCapableEncoderBroker) => {
-    return (encoderId, mimeType, sampleRate): MessagePort => {
+export const createInstantiateEncoder = (
+    closePort: typeof closePortFunction,
+    encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry>,
+    pickCapableEncoderBroker: ReturnType<typeof createPickCapableEncoderBroker>
+) => {
+    return (encoderId: number, mimeType: string, sampleRate: number) => {
         if (encoderInstancesRegistry.has(encoderId)) {
             throw new Error(`There is already an encoder registered with an id called "${encoderId}".`);
         }
