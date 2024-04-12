@@ -1,13 +1,13 @@
-import { IExtendableMediaRecorderWavEncoderBrokerDefinition } from 'extendable-media-recorder-wav-encoder-broker';
+import { IExtendableMediaRecorderWavEncoderBrokerDefinition, wrap } from 'extendable-media-recorder-wav-encoder-broker';
 import { TWorkerImplementation, createWorker } from 'worker-factory';
 import { createFinishEncoding } from './factories/finish-encoding';
 import { createGetEncoderInstance } from './factories/get-encoder-instance';
 import { createInstantiateEncoder } from './factories/instantiate-encoder';
 import { createPickCapableEncoderBroker } from './factories/pick-capable-encoder-broker';
+import { createRegisterEncoder } from './factories/register-encoder';
 import { createRemoveEncoderInstance } from './factories/remove-encoder-instance';
 import { createRequestPartialEncoding } from './factories/request-partial-encoding';
 import { closePort } from './functions/close-port';
-import { registerEncoder } from './functions/register-encoder';
 import { IMediaEncoderHostWorkerCustomDefinition } from './interfaces';
 import { TEncoderInstancesRegistryEntry } from './types';
 
@@ -26,6 +26,7 @@ const finishEncoding = createFinishEncoding(closePort, removeEncoderInstance);
 const pickCapableEncoderBroker = createPickCapableEncoderBroker(encoderBrokerRegistry);
 const instantiateEncoder = createInstantiateEncoder(closePort, encoderInstancesRegistry, pickCapableEncoderBroker);
 const requestPartialEncoding = createRequestPartialEncoding(getEncoderInstance);
+const registerEncoder = createRegisterEncoder(encoderBrokerRegistry, wrap);
 
 createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementation<IMediaEncoderHostWorkerCustomDefinition>>{
     encode: async ({ encoderId, timeslice }) => {
@@ -39,6 +40,6 @@ createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementati
         return { result: port, transferables: [port] };
     },
     register: async ({ port }) => {
-        return { result: await registerEncoder(encoderBrokerRegistry, port) };
+        return { result: await registerEncoder(port) };
     }
 });
