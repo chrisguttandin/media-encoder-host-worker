@@ -6,20 +6,24 @@ import type {
 export const createRegisterEncoder =
     (
         encoderBrokerRegistry: Map<string, [RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition]>,
-        ports: WeakMap<MessagePort, string>,
+        encoderIds: Map<number, string>,
         wrap: typeof wrapFunction
     ) =>
-    async (port: MessagePort) => {
+    async (encoderId: number, port: MessagePort) => {
         const encoderBroker = wrap(port);
         const regex = await encoderBroker.characterize();
         const regexAsString = regex.toString();
 
-        if (encoderBrokerRegistry.has(regexAsString) || ports.has(port)) {
+        if (encoderBrokerRegistry.has(regexAsString)) {
             throw new Error('There is already an encoder stored which handles exactly the same mime types.');
         }
 
+        if (encoderIds.has(encoderId)) {
+            throw new Error(`There is already an encoder registered with an id called "${encoderId}".`);
+        }
+
         encoderBrokerRegistry.set(regexAsString, [regex, encoderBroker]);
-        ports.set(port, regexAsString);
+        encoderIds.set(encoderId, regexAsString);
 
         return regex;
     };

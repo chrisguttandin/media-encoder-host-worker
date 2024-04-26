@@ -20,23 +20,24 @@ export * from './interfaces/index';
 export * from './types/index';
 
 const encoderBrokerRegistry: Map<string, [RegExp, IExtendableMediaRecorderWavEncoderBrokerDefinition]> = new Map();
-const ports = new WeakMap<MessagePort, string>();
-const deregisterEncoder = createDeregisterEncoder(encoderBrokerRegistry, ports);
+const encoderIds = new Map<number, string>();
+const deregisterEncoder = createDeregisterEncoder(encoderBrokerRegistry, encoderIds);
 const encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry> = new Map();
 const getEncoderInstance = createGetEncoderInstance(encoderInstancesRegistry);
 const removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry, getEncoderInstance);
 const finishEncoding = createFinishEncoding(closePort, removeEncoderInstance);
 const pickCapableEncoderBroker = createPickCapableEncoderBroker(encoderBrokerRegistry);
 const instantiateEncoder = createInstantiateEncoder(closePort, encoderInstancesRegistry, pickCapableEncoderBroker);
-const registerEncoder = createRegisterEncoder(encoderBrokerRegistry, ports, wrap);
+const registerEncoder = createRegisterEncoder(encoderBrokerRegistry, encoderIds, wrap);
 const requestPartialEncoding = createRequestPartialEncoding(getEncoderInstance);
 
 createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementation<IMediaEncoderHostWorkerCustomDefinition>>{
-    deregister: async ({ port }) => {
-        return { result: deregisterEncoder(port) };
+    deregister: async ({ encoderId }) => {
+        return { result: deregisterEncoder(encoderId) };
     },
     encode: async ({ encoderInstanceId, timeslice }) => {
-        const arrayBuffers = timeslice === null ? await finishEncoding(encoderInstanceId) : await requestPartialEncoding(encoderInstanceId, timeslice);
+        const arrayBuffers =
+            timeslice === null ? await finishEncoding(encoderInstanceId) : await requestPartialEncoding(encoderInstanceId, timeslice);
 
         return { result: arrayBuffers, transferables: arrayBuffers };
     },
@@ -45,7 +46,7 @@ createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementati
 
         return { result: port, transferables: [port] };
     },
-    register: async ({ port }) => {
-        return { result: await registerEncoder(port) };
+    register: async ({ encoderId, port }) => {
+        return { result: await registerEncoder(encoderId, port) };
     }
 });

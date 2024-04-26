@@ -3,7 +3,7 @@ import { IWorkerDefinition } from 'worker-factory';
 export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefinition {
     deregister: {
         params: {
-            port: MessagePort;
+            encoderId: number;
         };
 
         response: {
@@ -45,6 +45,8 @@ export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefiniti
 
     register: {
         params: {
+            encoderId: number;
+
             port: MessagePort;
         };
 

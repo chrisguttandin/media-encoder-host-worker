@@ -3,18 +3,20 @@ import { stub } from 'sinon';
 
 describe('registerEncoder()', () => {
     let encoderBrokerRegistry;
+    let encoderId;
+    let encoderIds;
     let port;
-    let ports;
     let registerEncoder;
     let wrap;
 
     beforeEach(() => {
         encoderBrokerRegistry = new Map();
+        encoderId = 'a fake encoder id';
+        encoderIds = new Map();
         port = 'a fake port';
-        ports = new Map();
         wrap = stub();
 
-        registerEncoder = createRegisterEncoder(encoderBrokerRegistry, ports, wrap);
+        registerEncoder = createRegisterEncoder(encoderBrokerRegistry, encoderIds, wrap);
     });
 
     describe('with an error thrown by wrap()', () => {
@@ -27,7 +29,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should call wrap() with the given port', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
                 done();
@@ -35,7 +37,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should rethrow the error', (done) => {
-            registerEncoder(port).catch((err) => {
+            registerEncoder(encoderId, port).catch((err) => {
                 expect(err).to.equal(error);
 
                 done();
@@ -43,16 +45,16 @@ describe('registerEncoder()', () => {
         });
 
         it('should not add anything to the encoderBrokerRegistry', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
 
                 done();
             });
         });
 
-        it('should not add anything to the ports', (done) => {
-            registerEncoder(port).catch(() => {
-                expect(ports.size).to.equal(0);
+        it('should not add anything to the encoderIds', (done) => {
+            registerEncoder(encoderId, port).catch(() => {
+                expect(encoderIds.size).to.equal(0);
 
                 done();
             });
@@ -72,7 +74,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should call wrap() with the given port', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
                 done();
@@ -80,7 +82,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should call characterize() on the encoderBroker returned by wrap()', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
 
                 done();
@@ -88,7 +90,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should rethrow the error', (done) => {
-            registerEncoder(port).catch((err) => {
+            registerEncoder(encoderId, port).catch((err) => {
                 expect(err).to.equal(error);
 
                 done();
@@ -96,16 +98,16 @@ describe('registerEncoder()', () => {
         });
 
         it('should not add anything to the encoderBrokerRegistry', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
 
                 done();
             });
         });
 
-        it('should not add anything to the ports', (done) => {
-            registerEncoder(port).catch(() => {
-                expect(ports.size).to.equal(0);
+        it('should not add anything to the encoderIds', (done) => {
+            registerEncoder(encoderId, port).catch(() => {
+                expect(encoderIds.size).to.equal(0);
 
                 done();
             });
@@ -127,7 +129,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should call wrap() with the given port', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
                 done();
@@ -135,7 +137,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should call characterize() on the encoderBroker returned by wrap()', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
 
                 done();
@@ -143,7 +145,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should throw an error', (done) => {
-            registerEncoder(port).catch((err) => {
+            registerEncoder(encoderId, port).catch((err) => {
                 expect(err.name).to.equal('Error');
                 expect(err.message).to.equal('There is already an encoder stored which handles exactly the same mime types.');
 
@@ -152,7 +154,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should not add anything to the encoderBrokerRegistry', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(1);
                 expect(encoderBrokerRegistry.get(regex)).to.equal('a fake entry');
 
@@ -160,16 +162,16 @@ describe('registerEncoder()', () => {
             });
         });
 
-        it('should not add anything to the ports', (done) => {
-            registerEncoder(port).catch(() => {
-                expect(ports.size).to.equal(0);
+        it('should not add anything to the encoderIds', (done) => {
+            registerEncoder(encoderId, port).catch(() => {
+                expect(encoderIds.size).to.equal(0);
 
                 done();
             });
         });
     });
 
-    describe('with an existing port', () => {
+    describe('with an existing encoder', () => {
         let encoderBroker;
         let regex;
 
@@ -177,14 +179,14 @@ describe('registerEncoder()', () => {
             encoderBroker = { characterize: stub() };
             regex = 'a fake regex';
 
-            ports.set(port, 'a fake entry');
+            encoderIds.set(encoderId, 'a fake entry');
 
             wrap.returns(encoderBroker);
             encoderBroker.characterize.resolves(regex);
         });
 
         it('should call wrap() with the given port', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
                 done();
@@ -192,7 +194,7 @@ describe('registerEncoder()', () => {
         });
 
         it('should call characterize() on the encoderBroker returned by wrap()', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
 
                 done();
@@ -200,26 +202,26 @@ describe('registerEncoder()', () => {
         });
 
         it('should throw an error', (done) => {
-            registerEncoder(port).catch((err) => {
+            registerEncoder(encoderId, port).catch((err) => {
                 expect(err.name).to.equal('Error');
-                expect(err.message).to.equal('There is already an encoder stored which handles exactly the same mime types.');
+                expect(err.message).to.equal('There is already an encoder registered with an id called "a fake encoder id".');
 
                 done();
             });
         });
 
         it('should not add anything to the encoderBrokerRegistry', (done) => {
-            registerEncoder(port).catch(() => {
+            registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
 
                 done();
             });
         });
 
-        it('should not add anything to the ports', (done) => {
-            registerEncoder(port).catch(() => {
-                expect(ports.size).to.equal(1);
-                expect(ports.get(port)).to.equal('a fake entry');
+        it('should not add anything to the encoderIds', (done) => {
+            registerEncoder(encoderId, port).catch(() => {
+                expect(encoderIds.size).to.equal(1);
+                expect(encoderIds.get(encoderId)).to.equal('a fake entry');
 
                 done();
             });
@@ -239,33 +241,33 @@ describe('registerEncoder()', () => {
         });
 
         it('should call wrap() with the given port', async () => {
-            await registerEncoder(port);
+            await registerEncoder(encoderId, port);
 
             expect(wrap).to.have.been.calledOnceWithExactly(port);
         });
 
         it('should call characterize() on the encoderBroker returned by wrap()', async () => {
-            await registerEncoder(port);
+            await registerEncoder(encoderId, port);
 
             expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
         });
 
         it('should return the regex returned by characterize()', async () => {
-            expect(await registerEncoder(port)).to.equal(regex);
+            expect(await registerEncoder(encoderId, port)).to.equal(regex);
         });
 
         it('should add the encoderBroker to the encoderBrokerRegistry', async () => {
-            await registerEncoder(port);
+            await registerEncoder(encoderId, port);
 
             expect(encoderBrokerRegistry.size).to.equal(1);
             expect(encoderBrokerRegistry.get(regex)).to.deep.equal([regex, encoderBroker]);
         });
 
-        it('should add the port to the ports', async () => {
-            await registerEncoder(port);
+        it('should add the port to the encoderIds', async () => {
+            await registerEncoder(encoderId, port);
 
-            expect(ports.size).to.equal(1);
-            expect(ports.get(port)).to.equal(regex);
+            expect(encoderIds.size).to.equal(1);
+            expect(encoderIds.get(encoderId)).to.equal(regex);
         });
     });
 });

@@ -14,12 +14,14 @@ describe('module', () => {
     });
 
     describe('register()', () => {
+        let encoderId;
         let id;
         let port;
 
         beforeEach(() => {
             const { port1, port2 } = new MessageChannel();
 
+            encoderId = 17;
             id = 43;
             port = port1;
 
@@ -36,7 +38,7 @@ describe('module', () => {
                     done();
                 });
 
-                worker.postMessage({ id, method: 'register', params: { port } }, [port]);
+                worker.postMessage({ id, method: 'register', params: { encoderId, port } }, [port]);
             });
         });
 
@@ -55,7 +57,9 @@ describe('module', () => {
                 };
 
                 worker.addEventListener('message', onMessage);
-                worker.postMessage({ id, method: 'register', params: { port: port1 } }, [port1]);
+                worker.postMessage({ id, method: 'register', params: { encoderId, port: port1 } }, [port1]);
+
+                encoderId += 1;
             });
 
             it('should return an error', (done) => {
@@ -72,7 +76,43 @@ describe('module', () => {
                     done();
                 });
 
-                worker.postMessage({ id, method: 'register', params: { port } }, [port]);
+                worker.postMessage({ id, method: 'register', params: { encoderId, port } }, [port]);
+            });
+        });
+
+        describe('with a previously registered encoder', () => {
+            beforeEach((done) => {
+                const { port1, port2 } = new MessageChannel();
+
+                port2.onmessage = ({ data }) => {
+                    port2.postMessage({ id: data.id, result: /^x-mime\/type$/ });
+                };
+
+                const onMessage = () => {
+                    worker.removeEventListener('message', onMessage);
+
+                    done();
+                };
+
+                worker.addEventListener('message', onMessage);
+                worker.postMessage({ id, method: 'register', params: { encoderId, port: port1 } }, [port1]);
+            });
+
+            it('should return an error', (done) => {
+                worker.addEventListener('message', ({ data }) => {
+                    expect(data).to.deep.equal({
+                        error: {
+                            // @todo Define a more meaningful error code.
+                            code: -32603,
+                            message: 'There is already an encoder registered with an id called "17".'
+                        },
+                        id
+                    });
+
+                    done();
+                });
+
+                worker.postMessage({ id, method: 'register', params: { encoderId, port } }, [port]);
             });
         });
     });

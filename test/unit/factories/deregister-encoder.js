@@ -3,47 +3,47 @@ import { createDeregisterEncoder } from '../../../src/factories/deregister-encod
 describe('deregisterEncoder()', () => {
     let deregisterEncoder;
     let encoderBrokerRegistry;
-    let ports;
+    let encoderIds;
 
     beforeEach(() => {
         encoderBrokerRegistry = new Map();
-        ports = new Map();
+        encoderIds = new Map();
 
-        deregisterEncoder = createDeregisterEncoder(encoderBrokerRegistry, ports);
+        deregisterEncoder = createDeregisterEncoder(encoderBrokerRegistry, encoderIds);
     });
 
-    describe('without an existing port', () => {
+    describe('without an existing encoder', () => {
         it('should throw an error', () => {
-            expect(() => deregisterEncoder('a fake port')).to.throw(Error, 'There is no encoder stored which wraps this port.');
+            expect(() => deregisterEncoder('a fake encoder id')).to.throw(Error, 'There was no encoder stored with the given id.');
         });
     });
 
-    describe('with an existing port', () => {
-        let port;
+    describe('with an existing encoder', () => {
+        let encoderId;
 
         beforeEach(() => {
-            port = 'a fake port';
+            encoderId = 'a fake encoder id';
         });
 
         describe('without an existing entry', () => {
             beforeEach(() => {
-                ports.set(port, 'a fake entry');
+                encoderIds.set(encoderId, 'a fake entry');
             });
 
             it('should return undefined', () => {
-                expect(deregisterEncoder(port)).to.be.undefined;
+                expect(deregisterEncoder(encoderId)).to.be.undefined;
             });
 
             it('should not change the encoderBrokerRegistry', () => {
-                deregisterEncoder(port);
+                deregisterEncoder(encoderId);
 
                 expect(encoderBrokerRegistry.size).to.equal(0);
             });
 
-            it('should delete the port', () => {
-                deregisterEncoder(port);
+            it('should delete the encoder', () => {
+                deregisterEncoder(encoderId);
 
-                expect(ports.size).to.equal(0);
+                expect(encoderIds.size).to.equal(0);
             });
         });
 
@@ -54,23 +54,23 @@ describe('deregisterEncoder()', () => {
                 regex = 'a fake regex';
 
                 encoderBrokerRegistry.set(regex, 'a fake entry');
-                ports.set(port, regex);
+                encoderIds.set(encoderId, regex);
             });
 
             it('should return undefined', () => {
-                expect(deregisterEncoder(port)).to.be.undefined;
+                expect(deregisterEncoder(encoderId)).to.be.undefined;
             });
 
             it('should delete the entry', () => {
-                deregisterEncoder(port);
+                deregisterEncoder(encoderId);
 
                 expect(encoderBrokerRegistry.size).to.equal(0);
             });
 
-            it('should delete the port', () => {
-                deregisterEncoder(port);
+            it('should delete the encoder', () => {
+                deregisterEncoder(encoderId);
 
-                expect(ports.size).to.equal(0);
+                expect(encoderIds.size).to.equal(0);
             });
         });
     });
