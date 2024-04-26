@@ -33,7 +33,9 @@ const requestPartialEncoding = createRequestPartialEncoding(getEncoderInstance);
 
 createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementation<IMediaEncoderHostWorkerCustomDefinition>>{
     deregister: async ({ encoderId }) => {
-        return { result: deregisterEncoder(encoderId) };
+        deregisterEncoder(encoderId);
+
+        return { result: null };
     },
     encode: async ({ encoderInstanceId, timeslice }) => {
         const arrayBuffers =

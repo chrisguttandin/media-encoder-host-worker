@@ -5,6 +5,64 @@ describe('module', () => {
         worker = new Worker('base/src/module.js');
     });
 
+    describe('deregister()', () => {
+        let encoderId;
+        let id;
+
+        beforeEach(() => {
+            encoderId = 17;
+            id = 43;
+        });
+
+        describe('with a not yet registered encoder', () => {
+            it('should return an error', (done) => {
+                worker.addEventListener('message', ({ data }) => {
+                    expect(data).to.deep.equal({
+                        error: {
+                            // @todo Define a more meaningful error code.
+                            code: -32603,
+                            message: 'There was no encoder stored with the given id.'
+                        },
+                        id
+                    });
+
+                    done();
+                });
+
+                worker.postMessage({ id, method: 'deregister', params: { encoderId } });
+            });
+        });
+
+        describe('with a previously registered encoder', () => {
+            beforeEach((done) => {
+                const { port1, port2 } = new MessageChannel();
+
+                port2.onmessage = ({ data }) => {
+                    port2.postMessage({ id: data.id, result: /^mime\/type$/ });
+                };
+
+                const onMessage = () => {
+                    worker.removeEventListener('message', onMessage);
+
+                    done();
+                };
+
+                worker.addEventListener('message', onMessage);
+                worker.postMessage({ id, method: 'register', params: { encoderId, port: port1 } }, [port1]);
+            });
+
+            it('should return null', (done) => {
+                worker.addEventListener('message', ({ data }) => {
+                    expect(data).to.deep.equal({ id, result: null });
+
+                    done();
+                });
+
+                worker.postMessage({ id, method: 'deregister', params: { encoderId } });
+            });
+        });
+    });
+
     describe('encode()', () => {
         // @todo
     });

@@ -7,7 +7,7 @@ export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefiniti
         };
 
         response: {
-            result: undefined;
+            result: null;
         };
     };
 
