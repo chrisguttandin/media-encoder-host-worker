@@ -5,11 +5,11 @@ export const createFinishEncoding = (
     closePort: typeof closePortFunction,
     removeEncoderInstance: ReturnType<typeof createRemoveEncoderInstance>
 ) => {
-    return (encoderId: number) => {
-        const [encoderBroker, port, isRecording, sampleRate] = removeEncoderInstance(encoderId);
+    return (encoderInstanceId: number) => {
+        const [encoderBroker, port, isRecording, sampleRate] = removeEncoderInstance(encoderInstanceId);
 
         if (!isRecording) {
-            return encoderBroker.encode(encoderId, null);
+            return encoderBroker.encode(encoderInstanceId, null);
         }
 
         return new Promise<ArrayBuffer[]>((resolve) => {
@@ -17,9 +17,9 @@ export const createFinishEncoding = (
                 if (data.length === 0) {
                     closePort(port);
 
-                    resolve(encoderBroker.encode(encoderId, null));
+                    resolve(encoderBroker.encode(encoderInstanceId, null));
                 } else {
-                    encoderBroker.record(encoderId, sampleRate, data);
+                    encoderBroker.record(encoderInstanceId, sampleRate, data);
                 }
             };
         });

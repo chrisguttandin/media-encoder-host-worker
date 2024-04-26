@@ -1,12 +1,12 @@
 import { createGetEncoderInstance } from '../../../src/factories/get-encoder-instance';
 
 describe('getEncoderInstance()', () => {
-    let encoderId;
+    let encoderInstanceId;
     let encoderInstancesRegistry;
     let getEncoderInstance;
 
     beforeEach(() => {
-        encoderId = 'a fake encoder id';
+        encoderInstanceId = 'a fake encoder instance id';
         encoderInstancesRegistry = new Map();
 
         getEncoderInstance = createGetEncoderInstance(encoderInstancesRegistry);
@@ -15,7 +15,7 @@ describe('getEncoderInstance()', () => {
     describe('without an entry with the given id', () => {
         it('should throw an error', () => {
             expect(() => {
-                getEncoderInstance(encoderId);
+                getEncoderInstance(encoderInstanceId);
             }).to.throw(Error, 'There was no instance of an encoder stored with the given id.');
         });
     });
@@ -26,11 +26,11 @@ describe('getEncoderInstance()', () => {
         beforeEach(() => {
             entry = ['a', 'fake', 'entry'];
 
-            encoderInstancesRegistry.set(encoderId, entry);
+            encoderInstancesRegistry.set(encoderInstanceId, entry);
         });
 
         it('should return the entry', () => {
-            expect(getEncoderInstance(encoderId)).to.equal(entry);
+            expect(getEncoderInstance(encoderInstanceId)).to.equal(entry);
         });
     });
 });

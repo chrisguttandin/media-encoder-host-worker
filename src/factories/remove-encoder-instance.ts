@@ -5,10 +5,10 @@ export const createRemoveEncoderInstance = (
     encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry>,
     getEncoderInstance: ReturnType<typeof createGetEncoderInstance>
 ) => {
-    return (encoderId: number) => {
-        const entry = getEncoderInstance(encoderId);
+    return (encoderInstanceId: number) => {
+        const entry = getEncoderInstance(encoderInstanceId);
 
-        encoderInstancesRegistry.delete(encoderId);
+        encoderInstancesRegistry.delete(encoderInstanceId);
 
         return entry;
     };

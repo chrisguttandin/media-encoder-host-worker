@@ -2,13 +2,13 @@ import { createRemoveEncoderInstance } from '../../../src/factories/remove-encod
 import { stub } from 'sinon';
 
 describe('removeEncoderInstance()', () => {
-    let encoderId;
+    let encoderInstanceId;
     let encoderInstancesRegistry;
     let getEncoderInstance;
     let removeEncoderInstance;
 
     beforeEach(() => {
-        encoderId = 'a fake encoder id';
+        encoderInstanceId = 'a fake encoder instance id';
         encoderInstancesRegistry = new Map();
         getEncoderInstance = stub();
 
@@ -22,7 +22,7 @@ describe('removeEncoderInstance()', () => {
 
         it('should rethrow the error', () => {
             expect(() => {
-                removeEncoderInstance(encoderId);
+                removeEncoderInstance(encoderInstanceId);
             }).to.throw(Error, 'a fake error');
         });
     });
@@ -33,18 +33,18 @@ describe('removeEncoderInstance()', () => {
         beforeEach(() => {
             entry = ['a', 'fake', 'entry'];
 
-            encoderInstancesRegistry.set(encoderId, entry);
+            encoderInstancesRegistry.set(encoderInstanceId, entry);
             getEncoderInstance.returns(entry);
         });
 
         it('should return the entry', () => {
-            expect(removeEncoderInstance(encoderId)).to.equal(entry);
+            expect(removeEncoderInstance(encoderInstanceId)).to.equal(entry);
         });
 
         it('should remove the entry', () => {
-            removeEncoderInstance(encoderId);
+            removeEncoderInstance(encoderInstanceId);
 
-            expect(encoderInstancesRegistry.has(encoderId)).to.be.false;
+            expect(encoderInstancesRegistry.has(encoderInstanceId)).to.be.false;
         });
     });
 });

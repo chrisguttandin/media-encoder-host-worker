@@ -35,13 +35,13 @@ createWorker<IMediaEncoderHostWorkerCustomDefinition>(self, <TWorkerImplementati
     deregister: async ({ port }) => {
         return { result: deregisterEncoder(port) };
     },
-    encode: async ({ encoderId, timeslice }) => {
-        const arrayBuffers = timeslice === null ? await finishEncoding(encoderId) : await requestPartialEncoding(encoderId, timeslice);
+    encode: async ({ encoderInstanceId, timeslice }) => {
+        const arrayBuffers = timeslice === null ? await finishEncoding(encoderInstanceId) : await requestPartialEncoding(encoderInstanceId, timeslice);
 
         return { result: arrayBuffers, transferables: arrayBuffers };
     },
-    instantiate: ({ encoderId, mimeType, sampleRate }) => {
-        const port = instantiateEncoder(encoderId, mimeType, sampleRate);
+    instantiate: ({ encoderInstanceId, mimeType, sampleRate }) => {
+        const port = instantiateEncoder(encoderInstanceId, mimeType, sampleRate);
 
         return { result: port, transferables: [port] };
     },

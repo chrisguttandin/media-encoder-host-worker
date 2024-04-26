@@ -8,16 +8,16 @@ export const createInstantiateEncoder = (
     encoderInstancesRegistry: Map<number, TEncoderInstancesRegistryEntry>,
     pickCapableEncoderBroker: ReturnType<typeof createPickCapableEncoderBroker>
 ) => {
-    return (encoderId: number, mimeType: string, sampleRate: number) => {
-        if (encoderInstancesRegistry.has(encoderId)) {
-            throw new Error(`There is already an encoder registered with an id called "${encoderId}".`);
+    return (encoderInstanceId: number, mimeType: string, sampleRate: number) => {
+        if (encoderInstancesRegistry.has(encoderInstanceId)) {
+            throw new Error(`There is already an encoder instance registered with an id called "${encoderInstanceId}".`);
         }
 
         const encoderBroker = pickCapableEncoderBroker(mimeType);
         const { port1, port2 } = new MessageChannel();
         const entry: TEncoderInstancesRegistryEntry = [encoderBroker, port1, true, sampleRate];
 
-        encoderInstancesRegistry.set(encoderId, entry);
+        encoderInstancesRegistry.set(encoderInstanceId, entry);
 
         port1.onmessage = ({ data }) => {
             if (data.length === 0) {
@@ -26,7 +26,7 @@ export const createInstantiateEncoder = (
                 entry[2] = false;
             } else {
                 encoderBroker.record(
-                    encoderId,
+                    encoderInstanceId,
                     sampleRate,
                     data.map((channelDataOrNumberOfSamples: number | TTypedArray) =>
                         typeof channelDataOrNumberOfSamples === 'number'

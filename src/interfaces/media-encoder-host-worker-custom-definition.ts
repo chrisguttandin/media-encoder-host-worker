@@ -13,7 +13,7 @@ export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefiniti
 
     encode: {
         params: {
-            encoderId: number;
+            encoderInstanceId: number;
 
             timeslice: null | number;
         };
@@ -29,7 +29,7 @@ export interface IMediaEncoderHostWorkerCustomDefinition extends IWorkerDefiniti
 
     instantiate: {
         params: {
-            encoderId: number;
+            encoderInstanceId: number;
 
             mimeType: string;
 
