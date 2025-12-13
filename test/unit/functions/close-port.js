@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { closePort } from '../../../src/functions/close-port';
 import { spy } from 'sinon';
 

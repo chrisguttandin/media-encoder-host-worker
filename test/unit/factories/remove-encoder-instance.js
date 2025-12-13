@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createRemoveEncoderInstance } from '../../../src/factories/remove-encoder-instance';
 import { stub } from 'sinon';
 

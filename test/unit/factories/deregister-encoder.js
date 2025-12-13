@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createDeregisterEncoder } from '../../../src/factories/deregister-encoder';
 
 describe('deregisterEncoder()', () => {

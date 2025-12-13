@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createRegisterEncoder } from '../../../src/factories/register-encoder';
 import { stub } from 'sinon';
 
@@ -28,36 +29,52 @@ describe('registerEncoder()', () => {
             wrap.throws(error);
         });
 
-        it('should call wrap() with the given port', (done) => {
+        it('should call wrap() with the given port', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should rethrow the error', (done) => {
+        it('should rethrow the error', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch((err) => {
                 expect(err).to.equal(error);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderBrokerRegistry', (done) => {
+        it('should not add anything to the encoderBrokerRegistry', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderIds', (done) => {
+        it('should not add anything to the encoderIds', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderIds.size).to.equal(0);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
     });
 
@@ -73,44 +90,64 @@ describe('registerEncoder()', () => {
             encoderBroker.characterize.rejects(error);
         });
 
-        it('should call wrap() with the given port', (done) => {
+        it('should call wrap() with the given port', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should call characterize() on the encoderBroker returned by wrap()', (done) => {
+        it('should call characterize() on the encoderBroker returned by wrap()', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should rethrow the error', (done) => {
+        it('should rethrow the error', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch((err) => {
                 expect(err).to.equal(error);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderBrokerRegistry', (done) => {
+        it('should not add anything to the encoderBrokerRegistry', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderIds', (done) => {
+        it('should not add anything to the encoderIds', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderIds.size).to.equal(0);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
     });
 
@@ -128,46 +165,66 @@ describe('registerEncoder()', () => {
             encoderBroker.characterize.resolves(regex);
         });
 
-        it('should call wrap() with the given port', (done) => {
+        it('should call wrap() with the given port', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should call characterize() on the encoderBroker returned by wrap()', (done) => {
+        it('should call characterize() on the encoderBroker returned by wrap()', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should throw an error', (done) => {
+        it('should throw an error', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch((err) => {
                 expect(err.name).to.equal('Error');
                 expect(err.message).to.equal('There is already an encoder stored which handles exactly the same mime types.');
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderBrokerRegistry', (done) => {
+        it('should not add anything to the encoderBrokerRegistry', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(1);
                 expect(encoderBrokerRegistry.get(regex)).to.equal('a fake entry');
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderIds', (done) => {
+        it('should not add anything to the encoderIds', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderIds.size).to.equal(0);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
     });
 
@@ -185,46 +242,66 @@ describe('registerEncoder()', () => {
             encoderBroker.characterize.resolves(regex);
         });
 
-        it('should call wrap() with the given port', (done) => {
+        it('should call wrap() with the given port', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(wrap).to.have.been.calledOnceWithExactly(port);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should call characterize() on the encoderBroker returned by wrap()', (done) => {
+        it('should call characterize() on the encoderBroker returned by wrap()', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should throw an error', (done) => {
+        it('should throw an error', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch((err) => {
                 expect(err.name).to.equal('Error');
                 expect(err.message).to.equal('There is already an encoder registered with an id called "a fake encoder id".');
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderBrokerRegistry', (done) => {
+        it('should not add anything to the encoderBrokerRegistry', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderBrokerRegistry.size).to.equal(0);
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
 
-        it('should not add anything to the encoderIds', (done) => {
+        it('should not add anything to the encoderIds', () => {
+            const { promise, resolve } = Promise.withResolvers();
+
             registerEncoder(encoderId, port).catch(() => {
                 expect(encoderIds.size).to.equal(1);
                 expect(encoderIds.get(encoderId)).to.equal('a fake entry');
 
-                done();
+                resolve();
             });
+
+            return promise;
         });
     });
 
