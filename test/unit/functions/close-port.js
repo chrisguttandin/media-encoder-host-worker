@@ -1,12 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { closePort } from '../../../src/functions/close-port';
-import { spy } from 'sinon';
 
 describe('closePort()', () => {
     let port;
 
     beforeEach(() => {
-        port = { close: spy(), onmessage: () => {} };
+        port = { close: vi.fn(), onmessage: () => {} };
     });
 
     it('should set the onmessage handler of the given port to null', () => {

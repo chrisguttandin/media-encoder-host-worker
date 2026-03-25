@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRegisterEncoder } from '../../../src/factories/register-encoder';
-import { stub } from 'sinon';
 
 describe('registerEncoder()', () => {
     let encoderBrokerRegistry;
@@ -15,7 +14,7 @@ describe('registerEncoder()', () => {
         encoderId = 'a fake encoder id';
         encoderIds = new Map();
         port = 'a fake port';
-        wrap = stub();
+        wrap = vi.fn();
 
         registerEncoder = createRegisterEncoder(encoderBrokerRegistry, encoderIds, wrap);
     });
@@ -26,14 +25,14 @@ describe('registerEncoder()', () => {
         beforeEach(() => {
             error = new Error('a fake error');
 
-            wrap.throws(error);
+            wrap.mockThrow(error);
         });
 
         it('should call wrap() with the given port', () => {
             const { promise, resolve } = Promise.withResolvers();
 
             registerEncoder(encoderId, port).catch(() => {
-                expect(wrap).to.have.been.calledOnceWithExactly(port);
+                expect(wrap).to.have.been.calledOnceWith(port);
 
                 resolve();
             });
@@ -83,18 +82,18 @@ describe('registerEncoder()', () => {
         let error;
 
         beforeEach(() => {
-            encoderBroker = { characterize: stub() };
+            encoderBroker = { characterize: vi.fn() };
             error = new Error('a fake error');
 
-            wrap.returns(encoderBroker);
-            encoderBroker.characterize.rejects(error);
+            wrap.mockReturnValue(encoderBroker);
+            encoderBroker.characterize.mockRejectedValue(error);
         });
 
         it('should call wrap() with the given port', () => {
             const { promise, resolve } = Promise.withResolvers();
 
             registerEncoder(encoderId, port).catch(() => {
-                expect(wrap).to.have.been.calledOnceWithExactly(port);
+                expect(wrap).to.have.been.calledOnceWith(port);
 
                 resolve();
             });
@@ -106,7 +105,7 @@ describe('registerEncoder()', () => {
             const { promise, resolve } = Promise.withResolvers();
 
             registerEncoder(encoderId, port).catch(() => {
-                expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
+                expect(encoderBroker.characterize).to.have.been.calledOnceWith();
 
                 resolve();
             });
@@ -156,20 +155,20 @@ describe('registerEncoder()', () => {
         let regex;
 
         beforeEach(() => {
-            encoderBroker = { characterize: stub() };
+            encoderBroker = { characterize: vi.fn() };
             regex = 'a fake regex';
 
             encoderBrokerRegistry.set(regex, 'a fake entry');
 
-            wrap.returns(encoderBroker);
-            encoderBroker.characterize.resolves(regex);
+            wrap.mockReturnValue(encoderBroker);
+            encoderBroker.characterize.mockResolvedValue(regex);
         });
 
         it('should call wrap() with the given port', () => {
             const { promise, resolve } = Promise.withResolvers();
 
             registerEncoder(encoderId, port).catch(() => {
-                expect(wrap).to.have.been.calledOnceWithExactly(port);
+                expect(wrap).to.have.been.calledOnceWith(port);
 
                 resolve();
             });
@@ -181,7 +180,7 @@ describe('registerEncoder()', () => {
             const { promise, resolve } = Promise.withResolvers();
 
             registerEncoder(encoderId, port).catch(() => {
-                expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
+                expect(encoderBroker.characterize).to.have.been.calledOnceWith();
 
                 resolve();
             });
@@ -233,20 +232,20 @@ describe('registerEncoder()', () => {
         let regex;
 
         beforeEach(() => {
-            encoderBroker = { characterize: stub() };
+            encoderBroker = { characterize: vi.fn() };
             regex = 'a fake regex';
 
             encoderIds.set(encoderId, 'a fake entry');
 
-            wrap.returns(encoderBroker);
-            encoderBroker.characterize.resolves(regex);
+            wrap.mockReturnValue(encoderBroker);
+            encoderBroker.characterize.mockResolvedValue(regex);
         });
 
         it('should call wrap() with the given port', () => {
             const { promise, resolve } = Promise.withResolvers();
 
             registerEncoder(encoderId, port).catch(() => {
-                expect(wrap).to.have.been.calledOnceWithExactly(port);
+                expect(wrap).to.have.been.calledOnceWith(port);
 
                 resolve();
             });
@@ -258,7 +257,7 @@ describe('registerEncoder()', () => {
             const { promise, resolve } = Promise.withResolvers();
 
             registerEncoder(encoderId, port).catch(() => {
-                expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
+                expect(encoderBroker.characterize).to.have.been.calledOnceWith();
 
                 resolve();
             });
@@ -310,23 +309,23 @@ describe('registerEncoder()', () => {
         let regex;
 
         beforeEach(() => {
-            encoderBroker = { characterize: stub() };
+            encoderBroker = { characterize: vi.fn() };
             regex = 'a fake regex';
 
-            wrap.returns(encoderBroker);
-            encoderBroker.characterize.resolves(regex);
+            wrap.mockReturnValue(encoderBroker);
+            encoderBroker.characterize.mockResolvedValue(regex);
         });
 
         it('should call wrap() with the given port', async () => {
             await registerEncoder(encoderId, port);
 
-            expect(wrap).to.have.been.calledOnceWithExactly(port);
+            expect(wrap).to.have.been.calledOnceWith(port);
         });
 
         it('should call characterize() on the encoderBroker returned by wrap()', async () => {
             await registerEncoder(encoderId, port);
 
-            expect(encoderBroker.characterize).to.have.been.calledOnceWithExactly();
+            expect(encoderBroker.characterize).to.have.been.calledOnceWith();
         });
 
         it('should return the regex returned by characterize()', async () => {

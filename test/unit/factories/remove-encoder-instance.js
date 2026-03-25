@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRemoveEncoderInstance } from '../../../src/factories/remove-encoder-instance';
-import { stub } from 'sinon';
 
 describe('removeEncoderInstance()', () => {
     let encoderInstanceId;
@@ -11,14 +10,14 @@ describe('removeEncoderInstance()', () => {
     beforeEach(() => {
         encoderInstanceId = 'a fake encoder instance id';
         encoderInstancesRegistry = new Map();
-        getEncoderInstance = stub();
+        getEncoderInstance = vi.fn();
 
         removeEncoderInstance = createRemoveEncoderInstance(encoderInstancesRegistry, getEncoderInstance);
     });
 
     describe('with an error thrown by getEncoderInstance()', () => {
         beforeEach(() => {
-            getEncoderInstance.throws(new Error('a fake error'));
+            getEncoderInstance.mockThrow(new Error('a fake error'));
         });
 
         it('should rethrow the error', () => {
@@ -35,7 +34,7 @@ describe('removeEncoderInstance()', () => {
             entry = ['a', 'fake', 'entry'];
 
             encoderInstancesRegistry.set(encoderInstanceId, entry);
-            getEncoderInstance.returns(entry);
+            getEncoderInstance.mockReturnValue(entry);
         });
 
         it('should return the entry', () => {
